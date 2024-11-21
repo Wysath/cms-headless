@@ -2,55 +2,73 @@
 
 namespace App\Entity;
 
-use App\Doctrine\Traits\UuidTrait;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Put;
+use App\Doctrine\TableEnum;
 use App\Doctrine\Traits\TimestampableTrait;
+use App\Doctrine\Traits\UuidTrait;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\Post;
+use App\Api\Processor\CreateUserProcessor;
+use App\ApiResource\CreateUser;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator\UnregistredEmail;
 
 #[ORM\Entity]
+#[ORM\Table(name: TableEnum::USER)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[GetCollection]
+#[GetCollection(security: 'is_granted("ROLE_ADMIN")')]
+#[Get(security: 'is_granted("ROLE_ADMIN")')]
+#[Put(security: 'is_granted("ROLE_ADMIN")')]
+#[Delete(security: 'is_granted("ROLE_ADMIN")')]
+#[Post(security: 'is_granted("ROLE_ADMIN")',input: CreateUser::class, processor: CreateUserProcessor::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    use UuidTrait, TimestampableTrait;
+    use UuidTrait;
+
+    #[ORM\Column(length: 180)]
+    #[Assert\NotNull]
+    #[Assert\Email]
+    #[UnregistredEmail]
+    public ?string $email = null;
+
+    #[ORM\Column]
+    public array $roles = [];
+
+    public function addRole(string $role): self
+    {
+        if (!in_array($role, $this->roles, true)) {
+            $this->roles[] = $role;
+        }
+
+        return $this;
+    }
+
+    public function removeRole(string $role): self
+    {
+        $this->roles = array_filter($this->roles, fn($r) => $r !== $role);
+
+        return $this;
+    }
+
+    #[ORM\Column]
+    public ?string $password = null;
 
     public function __construct()
     {
         $this->defineUuid();
     }
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $firstName = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $lastName = null;
-
-    #[ORM\Column(length: 180)]
-    public ?string $email = null;
-
-    #[ORM\Column]
-    private array $roles = [];
-
-    #[ORM\Column]
-    private ?string $password = null;
-
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): static
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
     }
-
 
     public function getRoles(): array
     {
@@ -61,26 +79,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
-    public function setRoles(array $roles): static
-    {
-        $this->roles = $roles;
-
-        return $this;
-    }
-
     public function getPassword(): ?string
     {
         return $this->password;
     }
-
-    public function setPassword(string $password): static
-    {
-        $this->password = $password;
-
-        return $this;
-    }
-
     public function eraseCredentials(): void
     {
     }
+
 }
