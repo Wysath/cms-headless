@@ -27,7 +27,7 @@ use App\Validator\UnregistredEmail;
 #[Get(security: 'is_granted("ROLE_ADMIN")')]
 #[Put(security: 'is_granted("ROLE_ADMIN")')]
 #[Delete(security: 'is_granted("ROLE_ADMIN")')]
-#[Post(security: 'is_granted("ROLE_ADMIN")',input: CreateUser::class, processor: CreateUserProcessor::class)]
+#[Post(security: 'is_granted("ROLE_ADMIN")', input: CreateUser::class, processor: CreateUserProcessor::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use UuidTrait;
@@ -52,7 +52,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeRole(string $role): self
     {
-        $this->roles = array_filter($this->roles, fn($r) => $r !== $role);
+        $this->roles = array_filter($this->roles, fn ($r) => $r !== $role);
 
         return $this;
     }

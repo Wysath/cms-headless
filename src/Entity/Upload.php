@@ -11,7 +11,6 @@ use App\Doctrine\Traits\TimestampableTrait;
 use App\Doctrine\Traits\UuidTrait;
 use Doctrine\ORM\Mapping as ORM;
 
-
 #[ApiResource(order: ['createdAt' => 'ASC'])]
 #[ORM\Entity]
 #[ORM\Table(name: TableEnum::UPLOAD)]
@@ -19,7 +18,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[Post(controller: UploadAction::class, deserialize: false)]
 class Upload
 {
-    use UuidTrait, TimestampableTrait;
+    use UuidTrait;
+    use TimestampableTrait;
 
     public function __construct()
     {

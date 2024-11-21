@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Api\Processor;
 
@@ -26,8 +28,8 @@ final readonly class CreateUserProcessor implements ProcessorInterface
     ): User {
         // Create a new User entity
         $user = new User();
-        $user->email=$data->email;
-        $user->password=$this->hasher->hashPassword($user, $data->password);
+        $user->email = $data->email;
+        $user->password = $this->hasher->hashPassword($user, $data->password);
 
         // Persist the user entity to the database
         $this->em->persist($user);

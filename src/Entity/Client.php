@@ -11,7 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: TableEnum::CLIENT)]
 class Client
 {
-    use UuidTrait, TimestampableTrait;
+    use UuidTrait;
+    use TimestampableTrait;
 
     public function __construct()
     {
