@@ -19,14 +19,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->defineUuid();
     }
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $firstName = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 180)]
-    private ?string $email = null;
+    public ?string $email = null;
 
     #[ORM\Column]
     private array $roles = [];

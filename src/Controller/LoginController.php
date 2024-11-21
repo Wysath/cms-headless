@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Service\Tokens;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -10,6 +11,13 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class LoginController extends AbstractController
 {
+    private Tokens $tokens;
+
+    public function __construct(Tokens $tokens)
+    {
+        $this->tokens = $tokens;
+    }
+
     #[Route('/api/login', name: 'api_login', methods: ['POST'])]
     public function index(#[CurrentUser] ?User $user): Response
     {
@@ -17,6 +25,8 @@ class LoginController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        return $this->json(['token' => 'votre-super-token', 'user' => $user->getUserIdentifier()]);
+        $token = $this->tokens->generateTokenForUser($user->email);
+
+        return $this->json(['token'=>$token, 'user'=>$user->getUserIdentifier()]);
     }
 }

@@ -21,6 +21,13 @@ security:
             json_login:
                 check_path: api_login
                 username_path: 'email'
+
+        api:
+            pattern: ^/api
+            provider: app_user_provider
+            stateless: true
+            custom_authenticator: App\Security\Authenticator\TokenAuthenticator
+
         main:
             lazy: true
             provider: app_user_provider
