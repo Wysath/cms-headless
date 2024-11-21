@@ -8,11 +8,13 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use App\Entity\Comments;
 use App\Entity\Content;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpFoundation\Request;
 
-final class CreateCommentProcessor implements ProcessorInterface
+final readonly class CreateCommentProcessor implements ProcessorInterface
 {
     public function __construct(
         private EntityManagerInterface $em,
@@ -20,6 +22,13 @@ final class CreateCommentProcessor implements ProcessorInterface
     ) {
     }
 
+    /**
+     * @param Comments $data
+     * @param Operation $operation
+     * @param array<string, mixed> $uriVariables
+     * @param array<string, mixed> $context
+     * @return Comments
+     */
     public function process(
         mixed $data,
         Operation $operation,
@@ -32,15 +41,15 @@ final class CreateCommentProcessor implements ProcessorInterface
 
         // Set the author
         $user = $this->security->getUser();
-        if ($user) {
+        if ($user instanceof User) {
             $comment->author = $user;
         } else {
-            throw new BadRequestHttpException('User not authenticated');
+            throw new BadRequestHttpException('User not authenticated or invalid user type');
         }
 
         // Extract the content ID from the URL
         if (isset($data->content)) {
-            $contentId = basename($data->content);
+            $contentId = (string) $data->content->getId();
             $content = $this->em->getRepository(Content::class)->find($contentId);
             if ($content) {
                 $comment->content = $content;

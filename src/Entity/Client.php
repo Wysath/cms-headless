@@ -27,7 +27,7 @@ class Client
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $email = null;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $imagePath = null;
 
     public function setName(string $name): self
@@ -36,15 +36,30 @@ class Client
         return $this;
     }
 
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
     public function setEmail(string $email): self
     {
         $this->email = $email;
         return $this;
     }
 
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
     public function setImagePath(?string $imagePath): self
     {
         $this->imagePath = $imagePath;
         return $this;
+    }
+
+    public function getImagePath(): ?string
+    {
+        return $this->imagePath;
     }
 }

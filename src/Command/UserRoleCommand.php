@@ -18,6 +18,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class UserRoleCommand extends Command
 {
+    private EntityManagerInterface $entityManager;
+
     public function __construct(EntityManagerInterface $entityManager)
     {
         parent::__construct();

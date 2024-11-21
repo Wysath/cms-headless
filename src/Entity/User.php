@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+namespace App\Entity;
+
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -38,8 +40,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[UnregistredEmail]
     public ?string $email = null;
 
-    #[ORM\Column]
+    /**
+     * @var array<string>
+     */
+    #[ORM\Column(type: 'json')]
     public array $roles = [];
+
+
 
     public function addRole(string $role): self
     {
@@ -83,8 +90,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->password;
     }
+
     public function eraseCredentials(): void
     {
     }
 
+    public function setEmail(mixed $email): void
+    {
+        $this->email = $email;
+    }
+
+    public function setPassword(string $hashPassword): void
+    {
+        $this->password = $hashPassword;
+    }
 }

@@ -7,11 +7,13 @@ namespace App\Api\Processor;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use App\Entity\Content;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-final readonly class CreateContentProcessor implements ProcessorInterface
+final class CreateContentProcessor implements ProcessorInterface
 {
     public function __construct(
         private EntityManagerInterface $em,
@@ -19,14 +21,21 @@ final readonly class CreateContentProcessor implements ProcessorInterface
         private SluggerInterface $slugger,
     ) {
     }
+
+    /**
+     * @param mixed $data
+     * @param Operation $operation
+     * @param array<string, mixed> $uriVariables
+     * @param array<string, mixed> $context
+     * @return Content
+     */
     public function process(
         mixed $data,
         Operation $operation,
         array $uriVariables = [],
         array $context = [],
     ): Content {
-
-        // Create a new User entity
+        // Create a new Content entity
         $content = new Content();
         $content->title = $data->title;
         $content->coverImage = $data->coverImage;
@@ -37,17 +46,16 @@ final readonly class CreateContentProcessor implements ProcessorInterface
         $content->setSlug($slug);
 
         $user = $this->security->getUser();
-        if ($user) {
+        if ($user instanceof User) {
             $content->author = $user;
+        } else {
+            throw new BadRequestHttpException('User not authenticated or invalid user type');
         }
 
-        // Persist the user entity to the database
+        // Persist the content entity to the database
         $this->em->persist($content);
         $this->em->flush();
 
         return $content;
     }
-}
-{
-
 }

@@ -22,12 +22,18 @@ class UnregistredEmailValidator extends ConstraintValidator
         }
 
         if (null === $value || '' === $value) {
-            return;
+            return; // Pas de validation nécessaire pour une valeur vide
         }
 
-        if ($this->entityManager->getRepository(User::class)->findOneBy(['email' => $value])) {
+        // Vérifier si la valeur peut être convertie en chaîne
+        if (!is_scalar($value) && !($value instanceof \Stringable)) {
+            throw new UnexpectedTypeException($value, 'string');
+        }
+
+        // Vérifier si l'email existe dans la base
+        if ($this->entityManager->getRepository(User::class)->findOneBy(['email' => (string) $value])) {
             $this->context->buildViolation($constraint->message)
-                ->setParameter('{{ string }}', $value)
+                ->setParameter('{{ string }}', (string) $value)
                 ->addViolation();
         }
     }
