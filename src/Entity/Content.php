@@ -32,7 +32,8 @@ use ApiPlatform\Metadata\ApiFilter;
 #[ORM\Table(name: TableEnum::CONTENT)]
 class Content
 {
-    use UuidTrait, TimestampableTrait;
+    use UuidTrait;
+    use TimestampableTrait;
 
     public function __construct()
     {
