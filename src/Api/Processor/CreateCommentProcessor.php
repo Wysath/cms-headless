@@ -14,55 +14,26 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpFoundation\Request;
 
-final readonly class CreateCommentProcessor implements ProcessorInterface
+class CreateCommentProcessor implements ProcessorInterface
 {
-    public function __construct(
-        private EntityManagerInterface $em,
-        private Security $security,
-    ) {
+    private EntityManagerInterface $entityManager;
+    private Security $security;
+
+    public function __construct(EntityManagerInterface $entityManager, Security $security)
+    {
+        $this->entityManager = $entityManager;
+        $this->security = $security;
     }
 
-    /**
-     * @param Comments $data
-     * @param Operation $operation
-     * @param array<string, mixed> $uriVariables
-     * @param array<string, mixed> $context
-     * @return Comments
-     */
-    public function process(
-        mixed $data,
-        Operation $operation,
-        array $uriVariables = [],
-        array $context = [],
-    ): Comments {
-        // Create a new Comments entity
+    public function process($data, Operation $operation, array $uriVariables = [], array $context = []): Comments
+    {
         $comment = new Comments();
         $comment->comment = $data->comment;
+        $comment->author = $this->security->getUser();
+        $comment->content = $data->content;
 
-        // Set the author
-        $user = $this->security->getUser();
-        if ($user instanceof User) {
-            $comment->author = $user;
-        } else {
-            throw new BadRequestHttpException('User not authenticated or invalid user type');
-        }
-
-        // Extract the content ID from the URL
-        if (isset($data->content)) {
-            $contentId = (string) $data->content->getUuid();
-            $content = $this->em->getRepository(Content::class)->find($contentId);
-            if ($content) {
-                $comment->content = $content;
-            } else {
-                throw new BadRequestHttpException('Content not found');
-            }
-        } else {
-            throw new BadRequestHttpException('Content is required');
-        }
-
-        // Persist the comment entity to the database
-        $this->em->persist($comment);
-        $this->em->flush();
+        $this->entityManager->persist($comment);
+        $this->entityManager->flush();
 
         return $comment;
     }

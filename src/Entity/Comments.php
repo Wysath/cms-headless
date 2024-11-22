@@ -22,7 +22,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource]
 #[Get]
 #[GetCollection]
-#[Post(security: 'is_granted("ROLE_ADMIN")', input: CreateComment::class, processor: CreateCommentProcessor::class)]
+#[Post(security: 'is_granted("ROLE_USER")', input: CreateComment::class, processor: CreateCommentProcessor::class)]
 #[Put(security: 'is_granted("ROLE_ADMIN") and object.author == user')]
 #[Delete(security: 'is_granted("ROLE_USER") and object.author == user')]
 #[ORM\Entity]
