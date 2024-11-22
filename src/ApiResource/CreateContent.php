@@ -2,6 +2,8 @@
 
 namespace App\ApiResource;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 class CreateContent
 {
     public ?string $title = null;

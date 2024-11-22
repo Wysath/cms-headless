@@ -32,8 +32,7 @@ use ApiPlatform\Metadata\ApiFilter;
 #[ORM\Table(name: TableEnum::CONTENT)]
 class Content
 {
-    use UuidTrait;
-    use TimestampableTrait;
+    use UuidTrait, TimestampableTrait;
 
     public function __construct()
     {
@@ -92,21 +91,12 @@ class Content
         return false;
     }
 
-    /**
-     * @var array<string>
-     */
     #[ORM\Column(type: 'json')]
     public array $tags = [];
-
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'author_uuid', referencedColumnName: 'uuid', onDelete: 'SET NULL')]
     #[ApiProperty(writable: false)]
     public ?User $author = null;
-
-    public function getId(): ?string
-    {
-        return $this->uuid;
-    }
 
 }

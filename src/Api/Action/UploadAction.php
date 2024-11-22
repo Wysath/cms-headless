@@ -8,12 +8,11 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 #[AsController]
-final readonly class UploadAction
+class UploadAction
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
@@ -24,6 +23,10 @@ final readonly class UploadAction
 
     public function __invoke(Request $request): JsonResponse
     {
+        error_log('FILES: ' . json_encode($request->files->all()));
+        error_log('POST: ' . json_encode($request->request->all()));
+        error_log('CONTENT: ' . $request->getContent());
+
         $file = $request->files->get('file');
 
         if (!$file instanceof UploadedFile) {
@@ -42,6 +45,6 @@ final readonly class UploadAction
         return new JsonResponse([
             'uuid' => $upload->getUuid(),
             'path' => $upload->path,
-        ], Response::HTTP_CREATED);
+        ], JsonResponse::HTTP_CREATED);
     }
 }

@@ -45,6 +45,8 @@ final class CreateContentProcessor implements ProcessorInterface
         $slug = (string) $this->slugger->slug($data->title)->lower();
         $content->setSlug($slug);
 
+        $content->defineUuid();
+
         $user = $this->security->getUser();
         if ($user instanceof User) {
             $content->author = $user;
