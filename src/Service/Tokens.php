@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Service;
 
@@ -19,10 +21,20 @@ final readonly class Tokens
             'expire' => $expire->getTimestamp(),
         ]);
 
-        return base64_encode(json_encode([
+        if ($encoded === false) {
+            throw new \RuntimeException('Failed to encode token data');
+        }
+
+        $signedData = json_encode([
             $encoded,
-            $this->sign($encoded)
-        ]));
+            $this->sign($encoded),
+        ]);
+
+        if ($signedData === false) {
+            throw new \RuntimeException('Failed to encode signed token data');
+        }
+
+        return base64_encode($signedData);
     }
 
     public function decodeUserToken(?string $token): ?string

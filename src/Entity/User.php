@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+namespace App\Entity;
+
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -27,7 +29,7 @@ use App\Validator\UnregistredEmail;
 #[Get(security: 'is_granted("ROLE_ADMIN")')]
 #[Put(security: 'is_granted("ROLE_ADMIN")')]
 #[Delete(security: 'is_granted("ROLE_ADMIN")')]
-#[Post(security: 'is_granted("ROLE_ADMIN")',input: CreateUser::class, processor: CreateUserProcessor::class)]
+#[Post(security: 'is_granted("ROLE_ADMIN")', input: CreateUser::class, processor: CreateUserProcessor::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use UuidTrait;
@@ -38,8 +40,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[UnregistredEmail]
     public ?string $email = null;
 
-    #[ORM\Column]
+    /**
+     * @var array<string>
+     */
+    #[ORM\Column(type: 'json')]
     public array $roles = [];
+
+
 
     public function addRole(string $role): self
     {
@@ -52,7 +59,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeRole(string $role): self
     {
-        $this->roles = array_filter($this->roles, fn($r) => $r !== $role);
+        $this->roles = array_filter($this->roles, fn ($r) => $r !== $role);
 
         return $this;
     }
@@ -83,8 +90,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->password;
     }
+
     public function eraseCredentials(): void
     {
     }
 
+    public function setEmail(mixed $email): void
+    {
+        $this->email = $email;
+    }
+
+    public function setPassword(string $hashPassword): void
+    {
+        $this->password = $hashPassword;
+    }
 }

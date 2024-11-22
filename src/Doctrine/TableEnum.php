@@ -4,11 +4,11 @@ namespace App\Doctrine;
 
 enum TableEnum
 {
-    const USER = 'user';
-    const CONTENT = 'content';
-    const COMMENTS = 'comments';
+    public const USER = 'user';
+    public const CONTENT = 'content';
+    public const COMMENTS = 'comments';
 
-    const UPLOAD = 'upload';
+    public const UPLOAD = 'upload';
 
-    const CLIENT = 'client';
+    public const IMPORT_CSV = 'import_csv';
 }

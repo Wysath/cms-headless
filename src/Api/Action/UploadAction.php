@@ -23,6 +23,10 @@ class UploadAction
 
     public function __invoke(Request $request): JsonResponse
     {
+        error_log('FILES: ' . json_encode($request->files->all()));
+        error_log('POST: ' . json_encode($request->request->all()));
+        error_log('CONTENT: ' . $request->getContent());
+
         $file = $request->files->get('file');
 
         if (!$file instanceof UploadedFile) {

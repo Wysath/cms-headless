@@ -29,7 +29,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: TableEnum::COMMENTS)]
 class Comments
 {
-    use UuidTrait, TimestampableTrait;
+    use UuidTrait;
+    use TimestampableTrait;
     public function __construct()
     {
         $this->defineUuid();

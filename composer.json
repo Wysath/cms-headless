@@ -9,6 +9,7 @@
         "ext-iconv": "*",
         "api-platform/doctrine-orm": "^4.0",
         "api-platform/symfony": "^4.0",
+        "cocur/slugify": "^4.6",
         "doctrine/dbal": "^3",
         "doctrine/doctrine-bundle": "^2.13",
         "doctrine/doctrine-migrations-bundle": "^3.3",
@@ -26,6 +27,7 @@
         "symfony/form": "7.1.*",
         "symfony/framework-bundle": "7.1.*",
         "symfony/http-client": "7.1.*",
+        "symfony/http-foundation": "7.1.*",
         "symfony/intl": "7.1.*",
         "symfony/mailer": "7.1.*",
         "symfony/mime": "7.1.*",
@@ -99,6 +101,7 @@
         }
     },
     "require-dev": {
+        "phpstan/phpstan": "^2.0",
         "phpunit/phpunit": "^9.5",
         "symfony/browser-kit": "7.1.*",
         "symfony/css-selector": "7.1.*",

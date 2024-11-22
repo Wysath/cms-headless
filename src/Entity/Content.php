@@ -22,7 +22,7 @@ use Cocur\Slugify\Slugify;
 use ApiPlatform\Metadata\ApiFilter;
 
 #[ApiResource(order: ['createdAt' => 'ASC'])]
-#[Get]
+#[Get(security: 'is_granted("ROLE_USER")')]
 #[GetCollection]
 #[Post(security: 'is_granted("ROLE_ADMIN")', input: CreateContent::class, processor: CreateContentProcessor::class)]
 #[Put(security: 'is_granted("ROLE_ADMIN") and object.author == user')]
@@ -53,6 +53,19 @@ class Content
 
     #[ORM\Column(type: 'string', length: 255, unique: true)]
     public ?string $slug;
+
+
+    /**
+     * @var string[] $tags
+     */
+    #[ORM\Column(type: 'json')]
+    public array $tags = [];
+
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'author_uuid', referencedColumnName: 'uuid', onDelete: 'SET NULL')]
+    #[ApiProperty(writable: false)]
+    public ?User $author = null;
 
     public function setTitle(string $title): self
     {
@@ -91,12 +104,8 @@ class Content
         return false;
     }
 
-    #[ORM\Column(type: 'json')]
-    public array $tags = [];
-
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: 'author_uuid', referencedColumnName: 'uuid', onDelete: 'SET NULL')]
-    #[ApiProperty(writable: false)]
-    public ?User $author = null;
-
+    public function getUuid(): ?string
+    {
+        return $this->uuid;
+    }
 }

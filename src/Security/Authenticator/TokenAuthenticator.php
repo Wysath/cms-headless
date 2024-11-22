@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Security\Authenticator;
 
@@ -23,7 +25,7 @@ final class TokenAuthenticator extends AbstractAuthenticator
     ) {
     }
 
-    public function supports(Request $request): ?bool
+    public function supports(Request $request): bool
     {
         return $request->headers->has('Authorization');
     }
@@ -39,7 +41,6 @@ final class TokenAuthenticator extends AbstractAuthenticator
 
             return null;
         }));
-
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
@@ -47,7 +48,7 @@ final class TokenAuthenticator extends AbstractAuthenticator
         return null;
     }
 
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
     {
         return new JsonResponse(['error' => 'Authentication failure.'], Response::HTTP_UNAUTHORIZED);
     }
