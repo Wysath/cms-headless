@@ -2,14 +2,25 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use App\Api\Processor\CreateContentProcessor;
+use App\ApiResource\CreateContent;
 use App\Doctrine\TableEnum;
 use App\Doctrine\Traits\TimestampableTrait;
 use App\Doctrine\Traits\UuidTrait;
 use Doctrine\ORM\Mapping as ORM;
-
+#[ApiResource(order: ['createdAt' => 'ASC'])]
+#[Get]
+#[GetCollection]
+#[Post(security: 'is_granted("ROLE_ADMIN")', input: CreateContent::class, processor: CreateContentProcessor::class)]
+#[Delete(security: 'is_granted("ROLE_ADMIN")')]
 #[ORM\Entity]
-#[ORM\Table(name: TableEnum::CLIENT)]
-class Client
+#[ORM\Table(name: TableEnum::IMPORT_CSV)]
+class ImportCSV
 {
     use UuidTrait;
     use TimestampableTrait;
@@ -21,36 +32,9 @@ class Client
         $this->updatedAt = new \DateTime();
     }
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private ?string $name = null;
-
-    #[ORM\Column(type: 'string', length: 255)]
-    private ?string $email = null;
-
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $imagePath = null;
 
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-        return $this;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
-        return $this;
-    }
-
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
 
     public function setImagePath(?string $imagePath): self
     {

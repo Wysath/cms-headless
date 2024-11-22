@@ -40,7 +40,7 @@ class Upload
         return $this->uuid;
     }
 
-    private function initializeTimestamps()
+    private function initializeTimestamps(): void
     {
     }
 }

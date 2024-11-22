@@ -10,5 +10,5 @@ enum TableEnum
 
     public const UPLOAD = 'upload';
 
-    public const CLIENT = 'client';
+    public const IMPORT_CSV = 'import_csv';
 }

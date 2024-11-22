@@ -5,6 +5,6 @@ controllers:
     type: attribute
 
 import_client:
-    path: /api/import-client
-    controller: App\Api\Action\ImportClientAction
+    path: /ApiRessource/ImportCSV
+    controller: App\Api\Action\ImportAction
     methods: [ POST ]

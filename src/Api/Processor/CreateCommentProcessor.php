@@ -49,7 +49,7 @@ final readonly class CreateCommentProcessor implements ProcessorInterface
 
         // Extract the content ID from the URL
         if (isset($data->content)) {
-            $contentId = (string) $data->content->getId();
+            $contentId = (string) $data->content->getUuid();
             $content = $this->em->getRepository(Content::class)->find($contentId);
             if ($content) {
                 $comment->content = $content;
