@@ -102,4 +102,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->password = $hashPassword;
     }
+
+    public function isAdmin(): bool
+    {
+        return in_array('ROLE_ADMIN', $this->roles, true);
+    }
+
+    public function isSubscriber(): bool
+    {
+        return in_array('ROLE_SUBSCRIBER', $this->roles, true);
+    }
+
+    public function isVisitor(): bool
+    {
+        return empty($this->roles) || $this->roles === ['ROLE_USER'];
+    }
 }
