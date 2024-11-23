@@ -46,8 +46,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'json')]
     public array $roles = [];
 
-
-
     public function addRole(string $role): self
     {
         if (!in_array($role, $this->roles, true)) {
