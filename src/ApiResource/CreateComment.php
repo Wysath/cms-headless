@@ -2,8 +2,14 @@
 
 namespace App\ApiResource;
 
+use App\Entity\Content;
+use Symfony\Component\Validator\Constraints as Assert;
+
 class CreateComment
 {
-    public ?string $comment = null;
-    public ?string $content = null;
+    #[Assert\NotBlank]
+    public string $comment;
+
+    #[Assert\NotNull]
+    public Content $content;
 }

@@ -10,7 +10,7 @@ use App\Doctrine\TableEnum;
 use App\Doctrine\Traits\TimestampableTrait;
 use App\Doctrine\Traits\UuidTrait;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Uid\Uuid;
+
 
 #[ApiResource(order: ['createdAt' => 'ASC'])]
 #[ORM\Entity]
@@ -19,28 +19,21 @@ use Symfony\Component\Uid\Uuid;
 #[Post(controller: UploadAction::class, deserialize: false)]
 class Upload
 {
-    use UuidTrait;
-    use TimestampableTrait;
-
-    #[ORM\Id]
-    #[ORM\Column(type: 'uuid', unique: true)]
-    public ?Uuid $uuid = null;
-
-    #[ORM\Column(type: 'string', length: 255)]
-    public ?string $path = null;
+    use UuidTrait, TimestampableTrait;
 
     public function __construct()
     {
         $this->defineUuid();
-        $this->initializeTimestamps();
+
     }
+
+
+    #[ORM\Id]
+    #[ORM\Column(type: 'string', length: 255)]
+    public ?string $path = null;
 
     public function getUuid(): ?string
     {
         return $this->uuid;
-    }
-
-    private function initializeTimestamps(): void
-    {
     }
 }

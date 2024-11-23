@@ -3,26 +3,27 @@
 namespace App\Api\Action;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use League\Csv\Reader;
-use App\Entity\ImportCSV;
+use App\Entity\Client;
 use App\Entity\Content;
-use Symfony\Component\Routing\Annotation\Route;
 
 
 #[AsController]
-readonly class ImportAction
+class ImportClientAction
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
+        private readonly EntityManagerInterface $entityManager,
+        #[Autowire(param: 'kernel.project_dir')]
+        private readonly string $projectDir,
     ) {
     }
 
-    //#[Route('/api/import', name: 'api_import', methods: ['POST'])]
     public function __invoke(Request $request): JsonResponse
     {
         $file = $request->files->get('file');
@@ -43,9 +44,6 @@ readonly class ImportAction
         return new JsonResponse(['status' => 'success'], JsonResponse::HTTP_CREATED);
     }
 
-    /**
-     * @param array<string, string|null> $record
-     */
     private function processRecord(array $record): void
     {
         // Check if the required keys exist and are not null
@@ -70,5 +68,15 @@ readonly class ImportAction
 
         $this->entityManager->persist($contentEntity);
         $this->entityManager->flush();
+    }
+
+    private function saveImage(string $imageUrl): string
+    {
+        $imageContent = file_get_contents($imageUrl);
+        $imageName = uniqid() . '.jpg';
+        $imagePath = $this->projectDir . '/public/images/' . $imageName;
+        file_put_contents($imagePath, $imageContent);
+
+        return '/images/' . $imageName;
     }
 }
