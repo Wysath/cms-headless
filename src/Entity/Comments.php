@@ -18,19 +18,19 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource]
-#[Get(security: 'is_granted("ROLE_USER")')]
-#[GetCollection(security: 'is_granted("ROLE_USER")')]
+#[Get(security: 'is_granted("ROLE_SUBSCRIBER")')]
+#[GetCollection(security: 'is_granted("ROLE_SUBSCRIBER")')]
 #[Post(
     security: 'is_granted("ROLE_SUBSCRIBER")',
     input: CreateComment::class,
     processor: CreateCommentProcessor::class
 )]
 #[Put(
-    security: 'is_granted("ROLE_USER") or is_granted("ROLE_ADMIN") and object.author == user',
+    security: 'is_granted("ROLE_SUBSCRIBER") and object.author == user',
     securityMessage: 'Vous ne pouvez modifier que vos propres commentaires.'
 )]
 #[Delete(
-    security: 'is_granted("ROLE_USER") and object.author == user',
+    security: 'is_granted("ROLE_SUBSCRIBER") and object.author == user',
     securityMessage: 'Vous ne pouvez supprimer que vos propres commentaires.'
 )]
 #[ORM\Entity]

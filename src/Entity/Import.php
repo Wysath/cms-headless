@@ -16,12 +16,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
     order: ['createdAt' => 'ASC'],
-    security: 'is_granted("ROLE_USER")'
+    security: 'is_granted("ROLE_SUBSCRIBER)'
 )]
 #[Post(
     inputFormats: ['multipart' => ['multipart/form-data']],
     controller: ImportClientAction::class,
-    security: 'is_granted("ROLE_ADMIN") or is_granted("ROLE_USER")',
+    security: 'is_granted("ROLE_ADMIN")',
     securityMessage: 'Vous n’avez pas l’autorisation pour effectuer cette action.',
     deserialize: false
 )]
