@@ -12,7 +12,7 @@ class UnregistredEmail extends Constraint
     public function __construct(
         ?string $message = null,
         ?array $groups = null,
-                $payload = null
+        $payload = null
     ) {
         parent::__construct([], $groups, $payload);
 

@@ -7,8 +7,6 @@ enum TableEnum
     public const USER = 'user';
     public const CONTENT = 'content';
     public const COMMENTS = 'comments';
-
     public const UPLOAD = 'upload';
-
-    public const CLIENT = 'client';
+    public const IMPORT = 'import';
 }

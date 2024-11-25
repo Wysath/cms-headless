@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Api\Filter;
 
@@ -8,6 +10,7 @@ use ApiPlatform\Metadata\Operation;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Uid\Uuid;
 use Throwable;
+
 use function array_map;
 use function is_array;
 use function sprintf;

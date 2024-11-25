@@ -5,6 +5,6 @@ controllers:
     type: attribute
 
 import_client:
-    path: /api/import-client
+    path: /api/imports
     controller: App\Api\Action\ImportClientAction
     methods: [ POST ]

@@ -22,11 +22,11 @@ use Cocur\Slugify\Slugify;
 use ApiPlatform\Metadata\ApiFilter;
 
 #[ApiResource(order: ['createdAt' => 'ASC'])]
-#[Get(security: 'is_granted("ROLE_USER")')]
-#[GetCollection]
-#[Post(security: 'is_granted("ROLE_ADMIN")', input: CreateContent::class, processor: CreateContentProcessor::class)]
-#[Put(security: 'is_granted("ROLE_ADMIN") and object.author == user')]
-#[Delete(security: 'is_granted("ROLE_ADMIN")')]
+#[Get(security: 'is_granted("ROLE_USER") or is_granted("ROLE_SUBSCRIBER")')]
+#[GetCollection(security: 'is_granted("ROLE_USER") or is_granted("ROLE_SUBSCRIBER")')]
+#[Post(security: 'is_granted("ROLE_SUBSCRIBER")', input: CreateContent::class, processor: CreateContentProcessor::class)]
+#[Put(security: 'is_granted("ROLE_ADMIN") or (is_granted("ROLE_SUBSCRIBER") and object.author == user)')]
+#[Delete(security: 'is_granted("ROLE_ADMIN") or (is_granted("ROLE_SUBSCRIBER") and object.author == user)')]
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'partial'])]
 #[ORM\Entity]
 #[ORM\Table(name: TableEnum::CONTENT)]
@@ -52,15 +52,14 @@ class Content
     public ?string $metaDescription = null;
 
     #[ORM\Column(type: 'string', length: 255, unique: true)]
-    public ?string $slug;
-
+    #[ApiProperty(writable: false)]
+    public ?string $slug = null;
 
     /**
      * @var string[] $tags
      */
     #[ORM\Column(type: 'json')]
     public array $tags = [];
-
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'author_uuid', referencedColumnName: 'uuid', onDelete: 'SET NULL')]
@@ -77,35 +76,8 @@ class Content
     public function setSlug(string $title): self
     {
         $slugify = new Slugify();
-        $slug = $slugify->slugify($title);
-
-        // Ensure the slug is unique
-        $uniqueSlug = $this->ensureUniqueSlug($slug);
-        $this->slug = $uniqueSlug;
-
+        $this->slug = $slugify->slugify($title);
         return $this;
     }
-
-    private function ensureUniqueSlug(string $slug): string
-    {
-        $uniqueSlug = $slug;
-        $counter = 1;
-
-        while ($this->slugExists($uniqueSlug)) {
-            $uniqueSlug = $slug . '-' . $counter;
-            $counter++;
-        }
-
-        return $uniqueSlug;
-    }
-
-    private function slugExists(string $slug): bool
-    {
-        return false;
-    }
-
-    public function getUuid(): ?string
-    {
-        return $this->uuid;
-    }
 }
+

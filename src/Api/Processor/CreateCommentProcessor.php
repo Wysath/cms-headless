@@ -27,9 +27,15 @@ class CreateCommentProcessor implements ProcessorInterface
 
     public function process($data, Operation $operation, array $uriVariables = [], array $context = []): Comments
     {
+        $user = $this->security->getUser();
+
+        if (!$user instanceof User) {
+            throw new BadRequestHttpException('Invalid user or not authenticated.');
+        }
+
         $comment = new Comments();
         $comment->comment = $data->comment;
-        $comment->author = $this->security->getUser();
+        $comment->author = $user;
         $comment->content = $data->content;
 
         $this->entityManager->persist($comment);
@@ -37,4 +43,5 @@ class CreateCommentProcessor implements ProcessorInterface
 
         return $comment;
     }
+
 }
