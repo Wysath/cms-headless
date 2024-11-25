@@ -47,3 +47,16 @@ The API documentation is available at:
   ```bash
   http://127.0.0.1:8000/api/docs
   ```
+
+## Commands
+
+Create User :
+```bash
+php bin/console user:create --email="user@example.com" --password="securepassword"
+```
+
+Update User Role :
+
+```bash
+php bin/console user:role email ROLE_USER add
+```
