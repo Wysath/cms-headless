@@ -11,13 +11,13 @@ use App\Entity\Comments;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-final class CreateUserProcessor implements ProcessorInterface{
-    public
-    function __construct(
+
+final class CreateUserProcessor implements ProcessorInterface
+{
+    public function __construct(
         private EntityManagerInterface      $em, // autowire comme poour votre command
         private UserPasswordHasherInterface $hasher, // autowire comme poour votre command
-    )
-    {
+    ) {
     }
 
     /**

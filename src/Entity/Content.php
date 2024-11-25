@@ -22,17 +22,19 @@ use Cocur\Slugify\Slugify;
 use ApiPlatform\Metadata\ApiFilter;
 
 #[ApiResource(order: ['createdAt' => 'ASC'])]
-#[Get(security: 'is_granted("ROLE_USER")')]
-#[GetCollection]
+#[Get(security: 'is_granted("ROLE_USER") or is_anonymous()')]
+#[GetCollection(security: 'is_granted("ROLE_USER") or is_anonymous()')]
 #[Post(security: 'is_granted("ROLE_ADMIN")', input: CreateContent::class, processor: CreateContentProcessor::class)]
 #[Put(security: 'is_granted("ROLE_ADMIN") and object.author == user')]
 #[Delete(security: 'is_granted("ROLE_ADMIN")')]
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'partial'])]
+#[ApiProperty(writable: false)]
 #[ORM\Entity]
 #[ORM\Table(name: TableEnum::CONTENT)]
 class Content
 {
-    use UuidTrait, TimestampableTrait;
+    use UuidTrait;
+    use TimestampableTrait;
 
     public function __construct()
     {
