@@ -30,7 +30,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     securityMessage: 'Vous devez être abonné et l auteur du commentaire, ou administrateur.'
 )]
 #[Delete(
-    security: 'is_granted("ROLE_SUBSCRIBER") and object.author == user',
+    security: 'is_granted("ROLE_SUBSCRIBER") or is_granted("ROLE_ADMIN") and object.author == user',
     securityMessage: 'Vous ne pouvez supprimer que vos propres commentaires.'
 )]
 #[ORM\Entity]
