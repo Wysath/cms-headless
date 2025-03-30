@@ -22,11 +22,12 @@ use App\Validator\UnregistredEmail;
 #[ORM\Entity]
 #[ORM\Table(name: TableEnum::USER)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-#[GetCollection(security: 'is_granted("ROLE_ADMIN")')]
-#[Get(security: 'is_granted("ROLE_ADMIN")')]
+#[GetCollection]
+#[Get]
+/**#[Get(security: 'is_granted("ROLE_USER") or object == user')]**/
 #[Put(security: 'is_granted("ROLE_ADMIN")')]
 #[Delete(security: 'is_granted("ROLE_ADMIN")')]
-#[Post(security: 'is_granted("ROLE_ADMIN")', input: CreateUser::class, processor: CreateUserProcessor::class)]
+#[Post(input: CreateUser::class, processor: CreateUserProcessor::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use UuidTrait;

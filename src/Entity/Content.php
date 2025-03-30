@@ -22,9 +22,9 @@ use Cocur\Slugify\Slugify;
 use ApiPlatform\Metadata\ApiFilter;
 
 #[ApiResource(order: ['createdAt' => 'ASC'])]
-#[Get(security: 'is_granted("ROLE_USER") or is_granted("ROLE_SUBSCRIBER")')]
-#[GetCollection(security: 'is_granted("ROLE_USER") or is_granted("ROLE_SUBSCRIBER")')]
-#[Post(security: 'is_granted("ROLE_SUBSCRIBER")', input: CreateContent::class, processor: CreateContentProcessor::class)]
+#[Get(security: 'is_granted("ROLE_USER") or is_granted("ROLE_SUBSCRIBER") or true')]
+#[GetCollection(security: 'is_granted("ROLE_USER") or is_granted("ROLE_SUBSCRIBER") or true')]
+#[Post(security: 'is_granted("ROLE_SUBSCRIBER") or is_granted("ROLE_ADMIN")', input: CreateContent::class, processor: CreateContentProcessor::class)]
 #[Put(security: 'is_granted("ROLE_ADMIN") or (is_granted("ROLE_SUBSCRIBER") and object.author == user)')]
 #[Delete(security: 'is_granted("ROLE_ADMIN") or (is_granted("ROLE_SUBSCRIBER") and object.author == user)')]
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'partial'])]
@@ -64,6 +64,7 @@ class Content
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'author_uuid', referencedColumnName: 'uuid', onDelete: 'SET NULL')]
     #[ApiProperty(writable: false)]
+    #[Groups(['content:read'])]
     public ?User $author = null;
 
     public function setTitle(string $title): self

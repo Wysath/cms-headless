@@ -32,7 +32,13 @@ final class TokenAuthenticator extends AbstractAuthenticator
 
     public function authenticate(Request $request): Passport
     {
-        $token = $request->headers->get('Authorization');
+        $authHeader = $request->headers->get('Authorization');
+
+        if (!$authHeader || !str_starts_with($authHeader, 'Bearer ')) {
+            throw new AuthenticationException('Invalid or missing Authorization header.');
+        }
+
+        $token = substr($authHeader, 7); // Supprime "Bearer " (7 caractères)
 
         return new SelfValidatingPassport(new UserBadge($token, function (string $token): ?User {
             if (null !== $email = $this->tokens->decodeUserToken($token)) {
@@ -42,6 +48,7 @@ final class TokenAuthenticator extends AbstractAuthenticator
             return null;
         }));
     }
+
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {

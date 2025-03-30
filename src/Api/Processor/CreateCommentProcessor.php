@@ -43,5 +43,6 @@ class CreateCommentProcessor implements ProcessorInterface
 
         return $comment;
     }
+    
 
 }
